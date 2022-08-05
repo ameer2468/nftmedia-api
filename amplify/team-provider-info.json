@@ -1,0 +1,23 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-nftmedia-dev-163141-authRole",
+      "UnauthRoleArn": "arn:aws:iam::782301667637:role/amplify-nftmedia-dev-163141-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::782301667637:role/amplify-nftmedia-dev-163141-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-nftmedia-dev-163141-deployment",
+      "UnauthRoleName": "amplify-nftmedia-dev-163141-unauthRole",
+      "StackName": "amplify-nftmedia-dev-163141",
+      "StackId": "arn:aws:cloudformation:us-east-1:782301667637:stack/amplify-nftmedia-dev-163141/f249fee0-14c2-11ed-a82c-12cb4ac6e20b",
+      "AmplifyAppId": "d2so3w659z7rgz"
+    },
+    "categories": {
+      "function": {
+        "auth": {
+          "deploymentBucketName": "amplify-nftmedia-dev-163141-deployment",
+          "s3Key": "amplify-builds/auth-307a3946534857567936-build.zip"
+        }
+      }
+    }
+  }
+}
