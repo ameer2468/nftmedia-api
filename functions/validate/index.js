@@ -7,7 +7,8 @@ exports.handler = async (event) => {
     let user;
     const randomNonce = Math.floor(Math.random() * 1000000);
     try {
-        const {token, wallet} = body;
+        const {wallet} = body;
+        const token = event.headers['auth-token'];
         const validateToken = jwt.verify(token, process.env.JWT_SECRET);
         if (validateToken) {
             await supabase
@@ -22,7 +23,8 @@ exports.handler = async (event) => {
                 statusCode: 200,
                 headers: {
                     "Content-Type": "application/json",
-                    'Access-Control-Allow-Origin': '*'
+                    "Access-Control-Allow-Origin": '*',
+                    "auth-token": token
                 },
                 body: JSON.stringify({
                     status: "success",
