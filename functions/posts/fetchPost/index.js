@@ -31,7 +31,7 @@ exports.handler = async (event) => {
                 thread: thread.data[0],
                 comments: [...comments.data],
                 didUserVote: didUserVote.data[0] || null,
-                addVotes: countVotes,
+                votes: countVotes,
             }),
         }
     }).catch((err) => {
