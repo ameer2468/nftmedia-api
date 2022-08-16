@@ -13,14 +13,16 @@ exports.handler = async (event) => {
             .select("*")
             .eq("thread_id", postId)
             .eq("user_id", userId),
-        supabase.from("votes").select("*").eq("thread_id", postId)
-    ]).then(([thread, comments, didUserVote, addVotes]) => {
+        supabase.from("votes").select("*").eq("thread_id", postId),
+        supabase.from("comments").select("*", {count: "exact"}).eq("thread_id", postId),
+    ]).then(([thread, comments, didUserVote, addVotes, commentCount]) => {
         const countVotes = addVotes.data.reduce(
             (acc, vote) => {
                 return acc + vote.dir;
             },
             0
         );
+        const didUserVoteForThisPost = didUserVote.data.length > 0 ? didUserVote.data[0].dir : 0;
         response = {
             statusCode: 200,
             headers: {
@@ -28,16 +30,16 @@ exports.handler = async (event) => {
                 'Access-Control-Allow-Origin': '*'
             },
             body: JSON.stringify({
-                thread: thread.data[0],
-                comments: [...comments.data],
-                didUserVote: didUserVote.data[0] || null,
-                votes: countVotes,
+                thread: {...thread.data[0], vote_count: countVotes,
+                    comment_count: commentCount.count,
+                    didUserVote: didUserVoteForThisPost},
+                comments: [...comments.data]
             }),
         }
     }).catch((err) => {
         response = {
             statusCode: 400,
-            response: err.message
+            response: err.response.data.message
         }
     });
     return response;
