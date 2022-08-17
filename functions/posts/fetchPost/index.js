@@ -22,7 +22,7 @@ exports.handler = async (event) => {
             },
             0
         );
-        const didUserVoteForThisPost = didUserVote.data.length > 0 ? didUserVote.data[0].dir : 0;
+        const didUserVoteForThisPost = didUserVote.data.length > 0 ? {dir: didUserVote.data[0].dir, id: didUserVote.data[0].id} : {dir: null, id: null};
         response = {
             statusCode: 200,
             headers: {

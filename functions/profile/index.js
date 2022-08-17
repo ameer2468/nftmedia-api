@@ -3,7 +3,7 @@ const axios = require('axios');
 
 
 exports.handler = async (event) => {
-    const user_id = event.queryStringParameters.userid;
+    const user_id = event.queryStringParameters.userId;
      let response = {};
       await axios.all([
             supabase
@@ -28,7 +28,17 @@ exports.handler = async (event) => {
                 .eq("user_id", user_id),
             supabase.from("threads").select("*").eq("user_id", user_id),
             supabase.from("followers").select("*").eq("followed_by_id", user_id),
-        ]).then(axios.spread((user, threadCount, commentCount, followCount, comments, threads, followers) => {
+        ]).then(axios.spread(async (user, threadCount, commentCount, followCount, comments, threads, followers) => {
+            const threadStats = threads.data.map(async (thread) => {
+                return {...thread,
+                    comment_count: await supabase.from("comments").select("*", { count: "exact" }).eq("thread_id", thread.id).then(res => res.count),
+                    vote_count: await supabase.from("votes").select("*").eq("thread_id", thread.id).then(res => res.data.reduce((acc, curr) => acc + curr.dir, 0)),
+                };
+            })
+         const data = await Promise.all(threadStats).then(res => {
+               return res;
+         })
+
             response = {
                 statusCode: 200,
                 headers: {
@@ -43,7 +53,7 @@ exports.handler = async (event) => {
                         isFollowing: followers.data.length > 0,
                     },
                     comments: comments.data,
-                    threads: threads.data,
+                    threads: data,
                 }),
             }
         })).catch((err) => {
