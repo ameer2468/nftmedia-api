@@ -32,7 +32,7 @@ exports.handler = async (event) => {
         },
         body: JSON.stringify({
           status: "success",
-          token: validateToken,
+          token: token,
           expiresIn: 10,
           user: {
             ...user,
