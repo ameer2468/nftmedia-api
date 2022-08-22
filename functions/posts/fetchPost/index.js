@@ -16,6 +16,7 @@ exports.handler = async (event) => {
       .eq("thread_id", postId)
       .eq("user_id", userId),
     supabase.from("votes").select("*").eq("thread_id", postId),
+    supabase.from("auth").select("avatar_url").eq("id", userId),
   ])
     .then(([thread, comments, didUserVote, addVotes, avatar_url]) => {
       const countVotes = addVotes.data.reduce((acc, vote) => {

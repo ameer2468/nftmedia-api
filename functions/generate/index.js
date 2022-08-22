@@ -9,7 +9,7 @@ exports.handler = async (event) => {
       { address, nonce, signature },
       process.env.JWT_SECRET,
       {
-        expiresIn: "10s",
+        expiresIn: "2h",
       }
     );
     await supabase

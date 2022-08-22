@@ -3,13 +3,12 @@ const axios = require("axios");
 
 exports.handler = async (event) => {
   const user_id = event.queryStringParameters.userId;
-  const followed_by_id = event.queryStringParameters.followedBy;
   let response = {};
   await axios
     .all([
       supabase
         .from("auth")
-        .select("wallet, created_at, display_name, id, avatar_image_url")
+        .select("wallet, created_at, display_name, avatar_url, id")
         .eq("id", user_id),
       supabase
         .from("threads")
@@ -28,10 +27,7 @@ exports.handler = async (event) => {
         .select("thread_title, thread_id, id")
         .eq("user_id", user_id),
       supabase.from("threads").select("*").eq("user_id", user_id),
-      supabase
-        .from("followers")
-        .select("*")
-        .eq("followed_by_id", followed_by_id),
+      supabase.from("followers").select("*").eq("followed_by_id", user_id),
     ])
     .then(
       axios.spread(
