@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "updatelambda": "del profile.zip && tar -a -c -f profile.zip * && aws lambda update-function-code --function-name profile --zip-file fileb://profile.zip"
+    "updatelambda": "rm profile.zip && tar -a -c -f profile.zip * && aws lambda update-function-code --function-name profile --zip-file fileb://profile.zip"
   },
   "keywords": [],
   "author": "",
