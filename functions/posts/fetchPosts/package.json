@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "updatelambda": "del fetchposts.zip && tar -a -c -f fetchposts.zip * && aws lambda update-function-code --function-name fetchPosts --zip-file fileb://fetchposts.zip"
+    "updatelambda": "rm fetchposts.zip && tar -a -c -f fetchposts.zip * && aws lambda update-function-code --function-name fetchPosts --zip-file fileb://fetchposts.zip"
   },
   "keywords": [],
   "author": "",

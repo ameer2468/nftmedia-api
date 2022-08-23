@@ -25,10 +25,10 @@ exports.handler = async () => {
   const getUserImageUrls = async (userid) => {
     return await supabase
       .from("auth")
-      .select("avatar_url")
+      .select("avatar_image_url")
       .eq("id", userid)
       .then((res) => {
-        return res.data[0].avatar_url;
+        return res.data[0].avatar_image_url;
       });
   };
 
@@ -42,7 +42,7 @@ exports.handler = async () => {
           ...thread,
           comment_count: await getCommentCount(thread.id),
           vote_count: await getVoteCount(thread.id),
-          user_image_url: await getUserImageUrls(thread.user_id),
+          avatar_image_url: await getUserImageUrls(thread.user_id),
         };
       });
       return Promise.all(threadStats);
