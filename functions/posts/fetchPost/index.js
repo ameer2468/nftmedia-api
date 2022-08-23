@@ -16,12 +16,23 @@ exports.handler = async (event) => {
       .eq("thread_id", postId)
       .eq("user_id", userId),
     supabase.from("votes").select("*").eq("thread_id", postId),
-    supabase.from("auth").select("avatar_url").eq("id", userId),
+    supabase.from("auth").select("avatar_image_url").eq("id", userId),
   ])
-    .then(([thread, comments, didUserVote, addVotes, avatar_url]) => {
+    .then(async ([thread, comments, didUserVote, addVotes, avatar_url]) => {
       const countVotes = addVotes.data.reduce((acc, vote) => {
         return acc + vote.dir;
       }, 0);
+      const post_comments = comments.data.map(async (value) => {
+        return {
+          ...value,
+          avatar_url: await supabase
+            .from("auth")
+            .select("avatar_image_url")
+            .eq("id", value.user_id)
+            .then((res) => res.data[0].avatar_image_url),
+        };
+      });
+      const avatar_image_url = avatar_url.data[0].avatar_image_url;
       const didUserVoteForThisPost =
         didUserVote.data.length > 0
           ? { dir: didUserVote.data[0].dir, id: didUserVote.data[0].id }
@@ -35,12 +46,12 @@ exports.handler = async (event) => {
         body: JSON.stringify({
           thread: {
             ...thread.data[0],
-            user_image_url: avatar_url.data[0].avatar_url,
             vote_count: countVotes,
             comment_count: comments.count,
             didUserVote: didUserVoteForThisPost,
+            avatar_image_url,
           },
-          comments: [...comments.data],
+          comments: await Promise.all(post_comments),
         }),
       };
     })
