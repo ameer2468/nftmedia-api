@@ -15,10 +15,13 @@ exports.handler = async () => {
   const getVoteCount = async (threadid) => {
     return await supabase
       .from("votes")
-      .select("*", { count: "exact" })
+      .select("dir")
       .eq("thread_id", threadid)
-      .then((res) => {
-        return res.count;
+      .then((votes) => {
+        console.log(votes.data);
+        votes.data.reduce((acc, vote) => {
+          return acc + vote.dir;
+        }, 0);
       });
   };
 
@@ -37,7 +40,7 @@ exports.handler = async () => {
     .select("*")
     .range(0, 10)
     .then((threads) => {
-      const threadStats = threads?.data.map(async (thread) => {
+      const threadStats = threads.data.map(async (thread) => {
         return {
           ...thread,
           comment_count: await getCommentCount(thread.id),
