@@ -18,8 +18,7 @@ exports.handler = async () => {
       .select("dir")
       .eq("thread_id", threadid)
       .then((votes) => {
-        console.log(votes.data);
-        votes.data.reduce((acc, vote) => {
+        return votes.data.reduce((acc, vote) => {
           return acc + vote.dir;
         }, 0);
       });
