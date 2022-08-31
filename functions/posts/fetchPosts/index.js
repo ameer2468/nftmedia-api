@@ -34,38 +34,41 @@ exports.handler = async () => {
       });
   };
 
-  await supabase
-    .from("threads")
-    .select("*")
-    .range(0, 10)
-    .then((threads) => {
-      const threadStats = threads.data.map(async (thread) => {
-        return {
-          ...thread,
-          comment_count: await getCommentCount(thread.id),
-          vote_count: await getVoteCount(thread.id),
-          avatar_image_url: await getUserImageUrls(thread.user_id),
+  try {
+    await supabase
+      .from("threads")
+      .select("*")
+      .range(0, 10)
+      .then((threads) => {
+        //on request undefined?
+        const threadStats = threads.data.map(async (thread) => {
+          return {
+            ...thread,
+            comment_count: await getCommentCount(thread.id),
+            vote_count: await getVoteCount(thread.id),
+            avatar_image_url: await getUserImageUrls(thread.user_id),
+          };
+        });
+        return Promise.all(threadStats);
+      })
+      .then((res) => {
+        response = {
+          statusCode: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+          body: JSON.stringify({
+            threads: res,
+          }),
         };
       });
-      return Promise.all(threadStats);
-    })
-    .then((res) => {
-      response = {
-        statusCode: 200,
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-        body: JSON.stringify({
-          threads: res,
-        }),
-      };
-    })
-    .catch((err) => {
-      response = {
-        statusCode: 400,
-        response: err.response.data.message,
-      };
-    });
+  } catch (err) {
+    response = {
+      statusCode: 400,
+      response: err.response.data.message,
+    };
+  }
+
   return response;
 };
