@@ -25,7 +25,7 @@ exports.handler = async (event) => {
       const post_comments = comments.data.map(async (value) => {
         return {
           ...value,
-          avatar_url: await supabase
+          avatar_image_url: await supabase
             .from("auth")
             .select("avatar_image_url")
             .eq("id", value.user_id)
