@@ -30,7 +30,11 @@ exports.handler = async () => {
       .select("avatar_image_url")
       .eq("id", userid)
       .then((res) => {
-        return res.data[0].avatar_image_url;
+        if (res.data.length > 0) {
+          return res.data[0].avatar_image_url;
+        } else {
+          return null;
+        }
       });
   };
 
@@ -38,7 +42,7 @@ exports.handler = async () => {
     .from("threads")
     .select("*")
     .range(0, 10)
-    .then((threads) => {
+    .then(async (threads) => {
       const threadStats = threads.data.map(async (thread) => {
         return {
           ...thread,
@@ -47,7 +51,7 @@ exports.handler = async () => {
           avatar_image_url: await getUserImageUrls(thread.user_id),
         };
       });
-      return Promise.all(threadStats);
+      return await Promise.all(threadStats);
     })
     .then((res) => {
       response = {

@@ -32,7 +32,7 @@ exports.handler = async (event) => {
             .then((res) => res.data[0].avatar_image_url),
         };
       });
-      const avatar_image_url = avatar_url.data[0].avatar_image_url;
+      const avatar_image_url = avatar_url.data[0].avatar_image_url || null;
       const didUserVoteForThisPost =
         didUserVote.data.length > 0
           ? { dir: didUserVote.data[0].dir, id: didUserVote.data[0].id }
