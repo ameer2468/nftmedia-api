@@ -7,6 +7,15 @@ exports.handler = async (event) => {
   const capitalFirstLetter =
     display_name.charAt(0).toUpperCase() + display_name.slice(1);
   const { data, error } = await supabase.from("chats").select("*");
+  const getChatLastMessage = async (chat) => {
+    const { data } = await supabase
+      .from("messages")
+      .select("*")
+      .eq("chat_id", chat.id)
+      .order("created_at", { ascending: false })
+      .limit(1);
+    return { message: data[0].message, created_at: data[0].created_at };
+  };
   const getUserImages = async (user) => {
     const request = await user.map(async (value) => {
       return {
@@ -30,7 +39,11 @@ exports.handler = async (event) => {
       return chat.users.some((user) => user === capitalFirstLetter);
     });
   const updateDataToUser = filterDataToUser.map(async (chat) => {
-    return { ...chat, users: await getUserImages(chat.users) };
+    return {
+      ...chat,
+      users: await getUserImages(chat.users),
+      last_message: await getChatLastMessage(chat),
+    };
   });
   const result = await Promise.all(updateDataToUser);
 
