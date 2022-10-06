@@ -14,7 +14,10 @@ exports.handler = async (event) => {
       .eq("chat_id", chat.id)
       .order("created_at", { ascending: false })
       .limit(1);
-    return { message: data[0].message, created_at: data[0].created_at };
+    return {
+      message: data[0].message || null,
+      created_at: data[0].created_at || null,
+    };
   };
   const getUserImages = async (user) => {
     const request = await user.map(async (value) => {
