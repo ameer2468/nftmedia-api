@@ -19,6 +19,10 @@ exports.handler = async (event) => {
     supabase.from("auth").select("avatar_image_url").eq("id", userId),
   ])
     .then(async ([thread, comments, didUserVote, addVotes, avatar_url]) => {
+      await supabase
+        .from("threads")
+        .update({ view_count: thread.data[0].view_count + 1 })
+        .eq("id", postId);
       const countVotes = addVotes.data.reduce((acc, vote) => {
         return acc + vote.dir;
       }, 0);
