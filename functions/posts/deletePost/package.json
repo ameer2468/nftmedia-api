@@ -1,0 +1,18 @@
+{
+  "name": "fetchpost",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "updatelambda": "rm fetchpost.zip && tar -a -c -f fetchpost.zip * && aws lambda update-function-code --function-name fetchpost --zip-file fileb://fetchpost.zip"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^1.35.6",
+    "axios": "^0.27.2",
+    "jsonwebtoken": "^8.5.1"
+  }
+}

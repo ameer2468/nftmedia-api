@@ -3,6 +3,7 @@ const axios = require("axios");
 
 exports.handler = async (event) => {
   const user_id = event.queryStringParameters.userId;
+  const user = event.queryStringParameters.user;
   let response = {};
   const data = async () => {
     return await axios
@@ -27,7 +28,7 @@ exports.handler = async (event) => {
           .from("comments")
           .select("thread_title, thread_id, id")
           .eq("user_id", user_id),
-        supabase.from("followers").select("*").eq("followed_by_id", user_id),
+        supabase.from("followers").select("*").eq("followed_by_id", user),
       ])
       .then(
         axios.spread(
@@ -68,7 +69,10 @@ exports.handler = async (event) => {
                   ...user.data[0],
                   postCount: threadCount.count + commentCount.count,
                   followerCount: followCount.count,
-                  isFollowing: followers.data.length > 0,
+                  isFollowing:
+                    followers.data.map((f) => {
+                      return f.followed_by_id === String(user);
+                    }).length > 0,
                 },
                 comments: comments.data,
                 threads: await Promise.all(threadStats).then((res) => {
