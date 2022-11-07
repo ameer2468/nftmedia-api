@@ -84,7 +84,6 @@ exports.handler = async (event) => {
         )
       )
       .catch((err) => {
-        console.log(err);
         response = {
           statusCode: 400,
           response: err.message,
@@ -95,7 +94,6 @@ exports.handler = async (event) => {
     await data();
     return response;
   } catch (err) {
-    console.log(err);
     return {
       statusCode: 500,
       body: JSON.stringify({
